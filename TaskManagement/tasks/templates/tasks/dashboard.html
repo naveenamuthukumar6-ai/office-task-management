@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- ===== SUMMARY CARDS ===== -->
+ <h1>Task Summary</h1>
+<div class="summary">
+    <div class="card pending">Pending<br>{{ pending }}</div>
+    <div class="card progress">In Progress<br>{{ progress }}</div>
+    <div class="card completed">Completed<br>{{ completed }}</div>
+</div>    
+
+{% endblock %}

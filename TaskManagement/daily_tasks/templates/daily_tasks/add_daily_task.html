@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Add Daily Task{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'daily_tasks.css' %}">
+
+
+<div class="form-center">
+
+    <div class="form-card">
+        <h2>Add Daily Task</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label>Task Title</label>
+            <input type="text" name="title" required>
+
+            <label>Description</label>
+            <textarea name="description" rows="4"></textarea>
+
+            <label>Status</label>
+            <select name="status">
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+
+            <button type="submit" class="primary-btn full-width">
+                Save Task
+            </button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

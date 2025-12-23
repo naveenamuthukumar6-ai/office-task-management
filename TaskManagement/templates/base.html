@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Office Task Management{% endblock %}</title>
+
+    <!-- Common CSS -->
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'form.css' %}">
+    <link rel="stylesheet" href="{% static 'daily_tasks.css' %}">
+</head>
+<body>
+
+<!-- ===== TOP HEADER ===== -->
+<div class="header">
+
+    <!-- Hamburger -->
+    <span class="hamburger" onclick="toggleMenu()">☰</span>
+
+    <h2>Office Task Management</h2>
+
+    <!-- Welcome + Logout -->
+    <div class="header-right">
+        <span class="welcome-text">
+            Welcome, <b>{{ user.username }}</b>
+        </span>
+        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+    </div>
+</div>
+
+<!-- ===== SIDE NAV ===== -->
+<div id="sidebar" class="sidebar">
+
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+
+    <!-- Daily Tasks -->
+    {% if is_admin %}
+        <a href="{% url 'daily_task_list' %}">Track Daily Tasks</a>
+        <a href="{% url 'add_task' %}">Assign New Task</a>
+    {% else %}
+        <a href="{% url 'daily_task_list' %}">Daily Tasks</a>
+        <a href="{% url 'task_list' %}">Assigned Tasks</a>
+
+         
+    {% endif %}
+    <!-- Daily Tasks -->
+     
+</div>
+
+<!-- ===== PAGE CONTENT ===== -->
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+
+<!-- ===== JS ===== -->
+<script>
+function toggleMenu() {
+    document.getElementById("sidebar").classList.toggle("open");
+}
+</script>
+
+</body>
+</html>

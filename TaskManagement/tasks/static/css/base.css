@@ -1,0 +1,34 @@
+.header {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.welcome-text {
+    font-size: 16px;
+}
+
+.logout-btn {
+    background: #ff4b4b;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.logout-btn:hover {
+    background: #e60000;
+}
+
+.content {
+    padding: 30px;
+}

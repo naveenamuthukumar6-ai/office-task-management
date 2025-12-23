@@ -1,0 +1,190 @@
+/* ================= GLOBAL ================= */
+body {
+    background-color: #f8fafc;
+    color: #111827;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+/* ================= PAGE TITLE ================= */
+.page-title {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #1f2937;
+}
+
+/* ================= ADD BUTTON ================= */
+.add-btn {
+    display: inline-block;
+    padding: 10px 18px;
+    background-color: #2563eb;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.add-btn:hover {
+    background-color: #1d4ed8;
+}
+
+/* ================= CARD ================= */
+.card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+/* ================= TABLE ================= */
+.task-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+}
+
+.task-table th {
+    background-color: #1f2937;
+    color: #f9fafb;
+    padding: 14px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.task-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #111827;
+}
+
+.task-table tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* ================= STATUS BADGES ================= */
+.status-Pending {
+    font-weight: bold;
+}
+
+.status-InProgress {
+    font-weight: bold;
+}
+
+.status-Completed {
+    font-weight: bold;
+}
+
+
+/* ================= EDIT BUTTON ================= */
+.edit-btn {
+    padding: 6px 14px;
+    background-color: #2563eb;
+    color: #ffffff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.edit-btn:hover {
+    background-color: #1d4ed8;
+}
+
+/* ================= CENTER FORM ================= */
+.form-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+}
+
+/* ================= FORM CARD ================= */
+.form-card {
+    background: #ffffff;
+    padding: 32px;
+    width: 420px;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+}
+
+.form-card h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #1f2937;
+}
+
+/* ================= FORM INPUTS ================= */
+.form-card input,
+.form-card textarea,
+.form-card select {
+    width: 100%;
+    padding: 11px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    font-size: 14px;
+    color: #111827;
+    background-color: #f9fafb;
+}
+
+.form-card input:focus,
+.form-card textarea:focus,
+.form-card select:focus {
+    outline: none;
+    border-color: #2563eb;
+    background-color: #ffffff;
+}
+
+/* ================= PRIMARY BUTTON ================= */
+.full-width-btn {
+    width: 100%;
+    background-color: #2563eb;
+    color: #ffffff;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.full-width-btn:hover {
+    background-color: #1d4ed8;
+}
+
+/* ================= MESSAGES ================= */
+.error-message {
+    color: #dc2626;
+    font-size: 14px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.success-message {
+    color: #16a34a;
+    font-size: 14px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+/* ================= LINKS ================= */
+.form-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.form-link:hover {
+    text-decoration: underline;
+}
+
+.locked-text {
+    color: #9ca3af;
+    font-size: 14px;
+    font-style: italic;
+    cursor: not-allowed;
+}
+
+   

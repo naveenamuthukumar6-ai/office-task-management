@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Office Login</title>
+    <link rel="stylesheet" href="{% static 'login.css' %}">
+</head>
+<body>
+
+<div class="login-container">
+
+    {% if error %}
+        <p style="color:red; text-align:center;">{{ error }}</p>
+    {% endif %}
+
+    <h2 style="text-align:center;">Login</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Username -->
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input 
+                type="text" 
+                id="username" 
+                name="username" 
+                placeholder="Enter username"
+                required
+            >
+        </div>
+
+        <!-- Password -->
+        <div class="form-group password-group">
+            <label for="password">Password</label>
+
+            <div class="password-wrapper">
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Enter password"
+                    required
+                >
+                <span 
+                    class="toggle-password" 
+                    onclick="togglePassword()"
+                    title="Show/Hide Password"
+            ></span>
+            </div>
+        </div>
+
+        <button type="submit" class="login-btn">Login</button>
+    </form>
+
+</div>
+
+<!-- Show / Hide Password -->
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById("password");
+    passwordInput.type =
+        passwordInput.type === "password" ? "text" : "password";
+}
+</script>
+
+
+</body>
+</html>

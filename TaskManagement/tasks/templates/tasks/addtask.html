@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% block title %}Assign New Task{% endblock %}
+
+{% block content %}
+<style>
+/* Modal Background */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* Modal Box */
+.modal-content {
+    background: #fff;
+    width: 400px;
+    margin: 8% auto;
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+
+</style>
+<div class="container">
+
+    <div class="task-page">
+
+    <!-- LEFT: FORM -->
+    <div class="task-form-section">
+        <!-- Your existing form-wrapper + form-card stays here -->
+    </div>
+
+    <!-- RIGHT: TABLE -->
+    <div class="task-table-section">
+        <!-- Filters + Table -->
+    </div>
+
+</div>
+
+    <!-- 🔍 FILTER SECTION -->
+    <form method="get" class="filter-box">
+        <select name="user">
+            <option value="">All Users</option>
+            {% for user in users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="text" name="title" placeholder="Task Title">
+
+        <select name="status">
+            <option value="">All Status</option>
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+        </select>
+
+        <input type="date" name="date">
+
+        <button type="submit" class="btn-filter">Filter</button>
+ </form>
+
+    <!-- ➕ ADD TASK BUTTON -->
+    <!-- <button class="btn-add-task" onclick="toggleForm()">Assign New Task</button> -->
+    <button class="btn-add-task" onclick="openModal()">Assign New Task</button>
+
+    <!-- 📋 TASK TABLE -->
+<table class="task-table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Task Title</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Due Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task.assigned_to.username }}</td>
+            <td>{{ task.title }}</td>
+            <td>{{ task.description }}</td>
+            <td>{{ task.status }}</td>
+            <td>{{ task.due_date }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No tasks found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- 📝 ASSIGN TASK FORM
+    <div class="form-wrapper" id="taskForm" style="display:none;">
+        <div class="form-card">
+            <h2>Assign New Task</h2>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <label>Task Title</label>
+                <input type="text" name="title" required>
+
+                <label>Description</label>
+                <textarea name="description" required></textarea>
+
+                <label>Assign To</label>
+                <select name="assigned_to" required>
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+
+                <label>Due Date</label>
+                <input type="date" name="due_date" required>
+
+                <button type="submit" class="primary-btn">
+                    Assign Task
+                </button>
+            </form>
+        </div>
+    </div>   -->
+
+    <!-- 📝 ASSIGN TASK MODAL -->
+<div class="modal" id="taskModal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+
+        <h2>Assign New Task</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label>Task Title</label>
+            <input type="text" name="title" required><br><br>
+            <label>Description</label>
+            <textarea name="description" required></textarea><br><br>
+
+            <label>Assign To</label>
+            <select name="assigned_to" required>
+                {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <label>Due Date</label>
+            <input type="date" name="due_date" required><br><br>
+
+            <button type="submit" class="primary-btn">
+                Assign Task
+            </button>
+        </form>
+    </div>
+</div>
+
+</div>
+
+<!-- <script>
+function toggleForm() {
+    const form = document.getElementById('taskForm');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+</script> -->
+<script>
+function openModal() {
+    document.getElementById("taskModal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("taskModal").style.display = "none";
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    let modal = document.getElementById("taskModal");
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+{% endblock %}
