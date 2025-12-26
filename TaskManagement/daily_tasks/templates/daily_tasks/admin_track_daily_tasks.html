@@ -1,16 +1,124 @@
-{% extends 'base.html' %}   {# or remove if you don’t use base.html #}
+{% extends 'base.html' %}
 
 {% block content %}
-<h2>Admin – Track Daily Tasks</h2>
 
-<!-- FILTERS -->
-<form method="get">
-     <select name="user">
-            <option value="">All Users</option>
-            {% for user in users %}
-                <option value="{{ user.id }}">{{ user.username }}</option>
-            {% endfor %}
-        </select>
+<style>
+/* ===== PAGE TITLE ===== */
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #1f2937;
+}
+
+/* ===== FILTER FORM ===== */
+.filter-form {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+}
+
+.filter-form select,
+.filter-form input[type="date"] {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+}
+
+.filter-form button {
+    padding: 8px 16px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.filter-form button:hover {
+    background: #1e40af;
+}
+
+/* ===== TABLE ===== */
+.task-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+
+.task-table th {
+    background: #1f2937;
+    color: white;
+    padding: 12px;
+    font-size: 14px;
+    text-align: left;
+}
+
+.task-table td {
+    padding: 12px;
+    font-size: 14px;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: top;
+}
+
+.task-table tr:hover {
+    background: #f9fafb;
+}
+
+/* ===== REMARKS FORM ===== */
+.remarks-box textarea {
+    width: 100%;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 13px;
+    resize: vertical;
+}
+
+.remarks-box button {
+    margin-top: 6px;
+    padding: 6px 12px;
+    background: #16a34a;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.remarks-box button:hover {
+    background: #15803d;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-row {
+    text-align: center;
+    font-style: italic;
+    color: #6b7280;
+}
+</style>
+
+<h2 class="page-title">Admin – Track Daily Tasks</h2>
+
+<!-- 🔍 FILTERS -->
+<form method="get" class="filter-form">
+
+    <select name="user">
+        <option value="">All Users</option>
+        {% for user in users %}
+            <option value="{{ user.id }}">{{ user.username }}</option>
+        {% endfor %}
+    </select>
 
     <select name="status">
         <option value="">All Status</option>
@@ -20,13 +128,12 @@
     </select>
 
     <input type="date" name="date" value="{{ selected_date }}">
+
     <button type="submit">Filter</button>
 </form>
 
-<br>
-
-<!-- TABLE -->
-<table border="1" width="100%">
+<!-- 📋 TASK TABLE -->
+<table class="task-table">
     <thead>
         <tr>
             <th>Date</th>
@@ -46,7 +153,7 @@
             <td>{{ task.title }}</td>
             <td>{{ task.description }}</td>
             <td>{{ task.status }}</td>
-            <td>
+            <td class="remarks-box">
                 <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="task_id" value="{{ task.id }}">
@@ -57,7 +164,7 @@
         </tr>
         {% empty %}
         <tr>
-            <td colspan="6">No tasks found</td>
+            <td colspan="6" class="empty-row">No tasks found</td>
         </tr>
         {% endfor %}
     </tbody>

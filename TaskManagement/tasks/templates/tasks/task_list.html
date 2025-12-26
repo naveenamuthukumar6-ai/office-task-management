@@ -4,66 +4,103 @@
 
 {% block content %}
 
-<h2 style="margin-bottom: 15px; color: white;">Task List</h2>
+<h2 style="
+    margin-bottom: 20px;
+    color: #0d0b0b;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+">
+ ASSIGNED TASK LIST
+</h2>
 
-<div class="content-card">
-    <table class="task-table">
-        <thead>
-            <tr>
-                <th>Task</th>
+<div style="
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    overflow-x: auto;
+">
 
-                {% if is_admin %}
-                    <th>Assigned To</th>
-                {% endif %}
+<table style="
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+">
 
-                <th>Status</th>
+<thead>
+<tr style="background-color:#3498db; color:white;">
+    <th style="padding:12px;">Task</th>
 
-                {% if not is_admin %}
-                    <th>Update</th>
-                {% endif %}
-            </tr>
-        </thead>
+    {% if is_admin %}
+        <th style="padding:12px;">Assigned To</th>
+    {% endif %}
 
-        <tbody>
-            {% for task in tasks %}
-            <tr>
-                <td>{{ task.title }}</td>
+    <th style="padding:12px;">Status</th>
 
-                {% if is_admin %}
-                    <td>{{ task.assigned_to.username }}</td>
-                {% endif %}
+    {% if not is_admin %}
+        <th style="padding:12px;">Update</th>
+    {% endif %}
+</tr>
+</thead>
 
-                <td>
-                    <span class="status {{ task.status|lower|cut:' ' }}">
-                        {{ task.status }}
-                    </span>
-                </td>
+<tbody>
+{% for task in tasks %}
+<tr style="border-bottom:1px solid #eee;">
 
-                {% if not is_admin %}
-                <td>
-                    {% if task.status == "Completed" %}
-                        <span class="status completed">Completed</span>
-                    {% else %}
-                        <form method="post" action="{% url 'update_status' task.id %}">
-                            {% csrf_token %}
-                            <select name="status">
-                                <option value="Pending" {% if task.status == 'Pending' %}selected{% endif %}>Pending</option>
-                                <option value="In Progress" {% if task.status == 'In Progress' %}selected{% endif %}>In Progress</option>
-                                <option value="Completed">Completed</option>
-                            </select>
-                            <button type="submit" class="update-btn">Update</button>
-                        </form>
-                    {% endif %}
-                </td>
-                {% endif %}
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4" style="text-align:center;">No tasks found</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <td style="padding:12px;">{{ task.title }}</td>
+
+    {% if is_admin %}
+        <td style="padding:12px;">{{ task.assigned_to.username }}</td>
+    {% endif %}
+
+    <td style="padding:12px;">
+        {% if task.status == "Pending" %}
+            <span style="background:#e74c3c; color:white; padding:5px 12px; border-radius:20px; font-size:13px;">
+                Pending
+            </span>
+        {% elif task.status == "In Progress" %}
+            <span style="background:#f39c12; color:white; padding:5px 12px; border-radius:20px; font-size:13px;">
+                In Progress
+            </span>
+        {% else %}
+            <span style="background:#27ae60; color:white; padding:5px 12px; border-radius:20px; font-size:13px;">
+                Completed
+            </span>
+        {% endif %}
+    </td>
+
+    {% if not is_admin %}
+    <td style="padding:12px;">
+        {% if task.status == "Completed" %}
+            <span style="background:#27ae60; color:white; padding:6px 12px; border-radius:20px; font-size:13px;">
+                Completed
+            </span>
+        {% else %}
+            <form method="post" action="{% url 'update_status' task.id %}" style="display:flex; gap:8px;">
+                {% csrf_token %}
+                <select name="status" style="padding:6px; border-radius:6px;">
+                    <option value="Pending" {% if task.status == 'Pending' %}selected{% endif %}>Pending</option>
+                    <option value="In Progress" {% if task.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
+                <button type="submit" style="background:#3498db; color:white; border:none; padding:6px 12px; border-radius:6px;">
+                    Update
+                </button>
+            </form>
+        {% endif %}
+    </td>
+    {% endif %}
+
+</tr>
+{% empty %}
+<tr>
+    <td colspan="4" style="text-align:center; padding:15px; color:#777;">
+        No tasks found
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
 </div>
 
 {% endblock %}

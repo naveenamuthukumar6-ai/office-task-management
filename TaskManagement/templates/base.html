@@ -1,56 +1,62 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>{% block title %}Office Task Management{% endblock %}</title>
 
-    <!-- Common CSS -->
-    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
-    <link rel="stylesheet" href="{% static 'form.css' %}">
-    <link rel="stylesheet" href="{% static 'daily_tasks.css' %}">
+    <!-- GLOBAL BASE CSS -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+
 </head>
 <body>
 
 <!-- ===== TOP HEADER ===== -->
-<div class="header">
+<header class="header">
+    <div class="header-left">
+        <span class="hamburger" onclick="toggleMenu()">☰</span>
+        <h2 class="app-title">Office Task Management</h2>
+    </div>
 
-    <!-- Hamburger -->
-    <span class="hamburger" onclick="toggleMenu()">☰</span>
-
-    <h2>Office Task Management</h2>
-
-    <!-- Welcome + Logout -->
     <div class="header-right">
         <span class="welcome-text">
             Welcome, <b>{{ user.username }}</b>
         </span>
+          <a href="{% url 'notifications' %}">
+    🔔 
+    {% if unread_count > 0 %}
+        <span style="color:red;">({{ unread_count }})</span>
+    {% endif %}
+</a>
+
         <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
     </div>
-</div>
+</header>
 
-<!-- ===== SIDE NAV ===== -->
-<div id="sidebar" class="sidebar">
 
+<!-- ===== LAYOUT ===== -->
+<div class="layout">
+
+    <!-- SIDEBAR -->
+<nav id="sidebar" class="sidebar">
     <a href="{% url 'dashboard' %}">Dashboard</a>
 
-    <!-- Daily Tasks -->
-    {% if is_admin %}
+    {% if role == 'ADMIN' %}
         <a href="{% url 'daily_task_list' %}">Track Daily Tasks</a>
         <a href="{% url 'add_task' %}">Assign New Task</a>
-    {% else %}
-        <a href="{% url 'daily_task_list' %}">Daily Tasks</a>
-        <a href="{% url 'task_list' %}">Assigned Tasks</a>
-
-         
+    {% elif role == 'EMPLOYEE' %}
+        <a href="{% url 'add_daily_task' %}">Add Daily Task</a>
+        <a href="{% url 'task_list' %}">My Tasks</a>
     {% endif %}
-    <!-- Daily Tasks -->
-     
-</div>
+</nav>
 
-<!-- ===== PAGE CONTENT ===== -->
-<div class="container">
-    {% block content %}
-    {% endblock %}
+
+    <!-- MAIN CONTENT -->
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
 </div>
 
 <!-- ===== JS ===== -->
@@ -58,6 +64,7 @@
 function toggleMenu() {
     document.getElementById("sidebar").classList.toggle("open");
 }
+
 </script>
 
 </body>

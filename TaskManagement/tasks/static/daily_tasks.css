@@ -1,190 +1,211 @@
-/* ================= GLOBAL ================= */
+/* ================= DAILY TASKS APP ================= */
+
+/* ===== GENERAL STYLING ===== */
 body {
-    background-color: #f8fafc;
-    color: #111827;
-    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f8;
+    margin: 0;
+    padding: 0;
+    color: #333;
 }
 
-/* ================= PAGE TITLE ================= */
-.page-title {
-    font-size: 26px;
-    font-weight: 600;
+.page-wrapper {
+    margin-top: 80px;
+    padding: 25px;
+}
+
+/* ===== PAGE HEADER ===== */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
-    color: #1f2937;
 }
 
-/* ================= ADD BUTTON ================= */
-.add-btn {
-    display: inline-block;
-    padding: 10px 18px;
-    background-color: #2563eb;
-    color: #ffffff;
-    text-decoration: none;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    font-weight: 500;
+.page-header h2 {
+    margin: 0;
+}
+
+.add-btn, .edit-btn, .filter-btn, .full-width-btn, .save-btn {
+    border: none;
+    border-radius: 6px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 14px;
     transition: background 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* ===== BUTTON COLORS ===== */
+.add-btn {
+    background: #27ae60;
+    color: white;
 }
 
 .add-btn:hover {
-    background-color: #1d4ed8;
+    background: #1e8449;
 }
 
-/* ================= CARD ================= */
-.card {
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 20px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-}
-
-/* ================= TABLE ================= */
-.task-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #ffffff;
-}
-
-.task-table th {
-    background-color: #1f2937;
-    color: #f9fafb;
-    padding: 14px;
-    text-align: left;
-    font-weight: 600;
-}
-
-.task-table td {
-    padding: 12px;
-    border-bottom: 1px solid #e5e7eb;
-    color: #111827;
-}
-
-.task-table tr:hover {
-    background-color: #f1f5f9;
-}
-
-/* ================= STATUS BADGES ================= */
-.status-Pending {
-    font-weight: bold;
-}
-
-.status-InProgress {
-    font-weight: bold;
-}
-
-.status-Completed {
-    font-weight: bold;
-}
-
-
-/* ================= EDIT BUTTON ================= */
 .edit-btn {
-    padding: 6px 14px;
-    background-color: #2563eb;
-    color: #ffffff;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
+    background: #f39c12;
+    color: white;
+    padding: 6px 10px;
+    font-size: 13px;
 }
 
 .edit-btn:hover {
-    background-color: #1d4ed8;
+    background: #d68910;
 }
 
-/* ================= CENTER FORM ================= */
-.form-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 70vh;
+.filter-btn {
+    background: #3498db;
+    color: white;
 }
 
-/* ================= FORM CARD ================= */
-.form-card {
-    background: #ffffff;
-    padding: 32px;
-    width: 420px;
-    border-radius: 16px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+.filter-btn:hover {
+    background: #217dbb;
 }
 
-.form-card h2 {
-    text-align: center;
-    margin-bottom: 24px;
-    color: #1f2937;
-}
-
-/* ================= FORM INPUTS ================= */
-.form-card input,
-.form-card textarea,
-.form-card select {
-    width: 100%;
-    padding: 11px;
-    margin-bottom: 16px;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-    font-size: 14px;
-    color: #111827;
-    background-color: #f9fafb;
-}
-
-.form-card input:focus,
-.form-card textarea:focus,
-.form-card select:focus {
-    outline: none;
-    border-color: #2563eb;
-    background-color: #ffffff;
-}
-
-/* ================= PRIMARY BUTTON ================= */
 .full-width-btn {
+    background: #3498db;
+    color: white;
     width: 100%;
-    background-color: #2563eb;
-    color: #ffffff;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
 }
 
 .full-width-btn:hover {
-    background-color: #1d4ed8;
+    background: #217dbb;
 }
 
-/* ================= MESSAGES ================= */
-.error-message {
-    color: #dc2626;
-    font-size: 14px;
-    margin-bottom: 12px;
-    text-align: center;
+.save-btn {
+    background: #2980b9;
+    color: white;
 }
 
-.success-message {
-    color: #16a34a;
-    font-size: 14px;
-    margin-bottom: 12px;
-    text-align: center;
+.save-btn:hover {
+    background: #1c5980;
 }
 
-/* ================= LINKS ================= */
-.form-link {
-    color: #2563eb;
-    text-decoration: none;
-    font-size: 14px;
+/* ===== CARD STYLING ===== */
+.card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
 }
 
-.form-link:hover {
-    text-decoration: underline;
+/* ===== TABLE STYLING ===== */
+.task-table, table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.task-table th, table th,
+.task-table td, table td {
+    text-align: left;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.task-table th, table th {
+    background-color: #3498db;
+    color: white;
+}
+
+.task-table tr:hover, table tr:hover {
+    background-color: #f1f9ff;
+}
+
+/* ===== STATUS BADGES ===== */
+.status-Pending {
+    color: #e74c3c;
+    font-weight: 600;
+}
+
+.status-In\ Progress {
+    color: #f39c12;
+    font-weight: 600;
+}
+
+.status-Completed {
+    color: #27ae60;
+    font-weight: 600;
+}
+
+.muted-text {
+    color: #888;
+    font-style: italic;
 }
 
 .locked-text {
-    color: #9ca3af;
-    font-size: 14px;
-    font-style: italic;
-    cursor: not-allowed;
+    color: #aaa;
 }
 
-   
+/* ===== REMARKS FORM ===== */
+.remarks-form textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+.remarks-form button {
+    margin-top: 8px;
+}
+
+/* ===== ADD / EDIT TASK FORM ===== */
+.form-center {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.form-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 400px;
+    max-width: 90%;
+}
+
+.form-card h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: #3498db;
+}
+
+.form-card input[type="text"],
+.form-card select,
+.form-card textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .task-table th, .task-table td,
+    table th, table td {
+        padding: 8px 10px;
+    }
+
+    .form-card {
+        padding: 20px;
+    }
+}

@@ -22,4 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('tasks.urls')),
      path('daily-tasks/', include('daily_tasks.urls')),
+     path('notifications/', include('notifications.urls')),
+
+    
 ]

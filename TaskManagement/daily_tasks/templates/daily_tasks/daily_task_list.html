@@ -4,7 +4,7 @@
 {% block title %}Daily Tasks{% endblock %}
 
 {% block content %}
-
+<link rel="stylesheet" href="{% static 'daily_tasks.css' %}">
 <div class="page-wrapper">
 
     <!-- ===== PAGE HEADER ===== -->
@@ -16,32 +16,47 @@
         {% endif %}
     </div>
 
-    <!-- ===== ADMIN FILTERS ===== -->
-    {% if user.is_staff %}
-    <div class="card filter-card">
-        <form method="get" class="filter-form">
+    {% if role == 'ADMIN' %}
+<form method="get" style="display:flex; gap:10px; align-items:end; margin-bottom:20px;">
 
-             <select name="user">
-            <option value="">All Users</option>
-            {% for user in users %}
-                <option value="{{ user.id }}">{{ user.username }}</option>
-            {% endfor %}
-        </select>
+    <!-- USER FILTER -->
+    <select name="user">
+        <option value="">All Employees</option>
+        {% for u in users %}
+            <option value="{{ u.id }}"
+                {% if selected_user == u.id|stringformat:"s" %}selected{% endif %}
+            >
+                {{ u.username }}
+            </option>
+        {% endfor %}
+    </select>
 
-            <select name="status">
-                <option value="">All Status</option>
-                <option value="Pending" {% if selected_status == "Pending" %}selected{% endif %}>Pending</option>
-                <option value="In Progress" {% if selected_status == "In Progress" %}selected{% endif %}>In Progress</option>
-                <option value="Completed" {% if selected_status == "Completed" %}selected{% endif %}>Completed</option>
-            </select>
+    <!-- STATUS FILTER -->
+    <select name="status">
+        <option value="">All Status</option>
+        <option value="Pending" {% if selected_status == "Pending" %}selected{% endif %}>Pending</option>
+        <option value="In Progress" {% if selected_status == "In Progress" %}selected{% endif %}>In Progress</option>
+        <option value="Completed" {% if selected_status == "Completed" %}selected{% endif %}>Completed</option>
+    </select>
 
-            <input type="date" name="date" value="{{ selected_date }}">
+    <!-- DATE FILTER -->
+    <input type="date" name="date" value="{{ selected_date }}">
 
-            <button type="submit" class="filter-btn">Filter</button>
-        </form>
-    </div>
-    {% endif %}
+    <!-- FILTER BUTTON -->
+    <button type="submit" style="background:#3498db;color:white;padding:6px 12px;border-radius:6px;border:none;">
+        Filter
+    </button>
 
+    <!-- 🔄 RESET BUTTON -->
+    <a href="{% url 'daily_task_list' %}"
+       style="background:#e74c3c;color:white;padding:6px 12px;border-radius:6px;text-decoration:none;">
+        Reset
+    </a>
+
+</form>
+{% endif %}
+
+<br><br>
     <!-- ===== TASK TABLE ===== -->
     <div class="card">
         <table class="task-table">

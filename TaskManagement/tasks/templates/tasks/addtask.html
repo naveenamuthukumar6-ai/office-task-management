@@ -1,9 +1,106 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Assign New Task{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'assign_task.css' %}">
+
 <style>
-/* Modal Background */
+/* ===== GENERAL STYLING ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f8;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto;
+}
+
+/* ===== FILTER FORM ===== */
+.filter-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.filter-box select,
+.filter-box input[type="text"],
+.filter-box input[type="date"],
+.filter-box button {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.filter-box button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.filter-box button:hover {
+    background-color: #217dbb;
+}
+
+/* ===== ADD TASK BUTTON ===== */
+.btn-add-task {
+    background-color: #2ecc71;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.btn-add-task:hover {
+    background-color: #27a357;
+}
+
+/* ===== TASK TABLE ===== */
+.task-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.task-table th,
+.task-table td {
+    text-align: left;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.task-table th {
+    background-color: #3498db;
+    color: white;
+}
+
+.task-table tr:hover {
+    background-color: #f1f9ff;
+}
+
+.task-table td {
+    color: #333;
+}
+
+/* ===== MODAL ===== */
 .modal {
     display: none;
     position: fixed;
@@ -12,60 +109,101 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0,0,0,0.6);
 }
 
-/* Modal Box */
 .modal-content {
     background: #fff;
     width: 400px;
+    max-width: 90%;
     margin: 8% auto;
-    padding: 20px;
+    padding: 25px 30px;
     border-radius: 10px;
     position: relative;
     animation: fadeIn 0.3s ease-in-out;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-/* Close Button */
 .close-btn {
     position: absolute;
     right: 15px;
     top: 10px;
-    font-size: 22px;
+    font-size: 24px;
     cursor: pointer;
+    color: #333;
 }
 
-/* Animation */
+.modal h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #3498db;
+    font-size: 24px;
+}
+
+/* Modal Form Elements */
+.modal form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.modal form input[type="text"],
+.modal form input[type="date"],
+.modal form select,
+.modal form textarea {
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+.modal form textarea {
+    min-height: 80px;
+}
+
+.primary-btn {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    transition: background 0.3s;
+}
+
+.primary-btn:hover {
+    background-color: #217dbb;
+}
+
+/* ===== ANIMATION ===== */
 @keyframes fadeIn {
-    from {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    .filter-box {
+        flex-direction: column;
+    }
+    
+    .task-table th, .task-table td {
+        padding: 8px 10px;
+    }
 
+    .modal-content {
+        padding: 20px;
+    }
+}
 </style>
+
 <div class="container">
 
-    <div class="task-page">
-
-    <!-- LEFT: FORM -->
-    <div class="task-form-section">
-        <!-- Your existing form-wrapper + form-card stays here -->
-    </div>
-
-    <!-- RIGHT: TABLE -->
-    <div class="task-table-section">
-        <!-- Filters + Table -->
-    </div>
-
-</div>
-
-    <!-- 🔍 FILTER SECTION -->
+    <!-- FILTER FORM -->
     <form method="get" class="filter-box">
         <select name="user">
             <option value="">All Users</option>
@@ -86,43 +224,52 @@
         <input type="date" name="date">
 
         <button type="submit" class="btn-filter">Filter</button>
- </form>
 
-    <!-- ➕ ADD TASK BUTTON -->
-    <!-- <button class="btn-add-task" onclick="toggleForm()">Assign New Task</button> -->
+         <!-- 🔄 RESET BUTTON -->
+    <a href="{% url 'daily_task_list' %}"
+       style="background:#e74c3c;color:white;padding:6px 12px;border-radius:6px;text-decoration:none;">
+        Reset
+    </a>
+    </form>
+
+    <!-- ADD TASK BUTTON -->
     <button class="btn-add-task" onclick="openModal()">Assign New Task</button>
 
-    <!-- 📋 TASK TABLE -->
-<table class="task-table">
-    <thead>
-        <tr>
-            <th>User</th>
-            <th>Task Title</th>
-            <th>Description</th>
-            <th>Status</th>
-            <th>Due Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for task in tasks %}
-        <tr>
-            <td>{{ task.assigned_to.username }}</td>
-            <td>{{ task.title }}</td>
-            <td>{{ task.description }}</td>
-            <td>{{ task.status }}</td>
-            <td>{{ task.due_date }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5">No tasks found</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <br><br>
 
-<!-- 📝 ASSIGN TASK FORM
-    <div class="form-wrapper" id="taskForm" style="display:none;">
-        <div class="form-card">
+    <!-- TASK TABLE -->
+    <table class="task-table">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Task Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Due Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.assigned_to.username }}</td>
+                <td>{{ task.title }}</td>
+                <td>{{ task.description }}</td>
+                <td>{{ task.status }}</td>
+                <td>{{ task.due_date }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No tasks found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- ASSIGN TASK MODAL -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+
             <h2>Assign New Task</h2>
 
             <form method="post">
@@ -149,48 +296,10 @@
                 </button>
             </form>
         </div>
-    </div>   -->
-
-    <!-- 📝 ASSIGN TASK MODAL -->
-<div class="modal" id="taskModal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-
-        <h2>Assign New Task</h2>
-
-        <form method="post">
-            {% csrf_token %}
-
-            <label>Task Title</label>
-            <input type="text" name="title" required><br><br>
-            <label>Description</label>
-            <textarea name="description" required></textarea><br><br>
-
-            <label>Assign To</label>
-            <select name="assigned_to" required>
-                {% for user in users %}
-                    <option value="{{ user.id }}">{{ user.username }}</option>
-                {% endfor %}
-            </select><br><br>
-
-            <label>Due Date</label>
-            <input type="date" name="due_date" required><br><br>
-
-            <button type="submit" class="primary-btn">
-                Assign Task
-            </button>
-        </form>
     </div>
-</div>
 
 </div>
 
-<!-- <script>
-function toggleForm() {
-    const form = document.getElementById('taskForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-</script> -->
 <script>
 function openModal() {
     document.getElementById("taskModal").style.display = "block";
@@ -200,7 +309,6 @@ function closeModal() {
     document.getElementById("taskModal").style.display = "none";
 }
 
-// Close modal when clicking outside
 window.onclick = function(event) {
     let modal = document.getElementById("taskModal");
     if (event.target === modal) {

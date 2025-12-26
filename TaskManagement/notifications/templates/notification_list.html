@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 20px auto; font-family: Arial, sans-serif;">
+    <h2 style="text-align: center; color: #2c3e50; margin-bottom: 20px;">Notifications</h2>
+
+    {% for n in notifications %}
+        <div style="
+            padding: 15px 20px; 
+            border-bottom: 1px solid #ddd; 
+            background-color: #f9f9f9; 
+            margin-bottom: 5px; 
+            border-radius: 6px;
+            transition: background-color 0.2s ease-in-out;
+        "
+        onmouseover="this.style.backgroundColor='#e0f7fa';"
+        onmouseout="this.style.backgroundColor='#f9f9f9';"
+        >
+            <p style="margin:0; color:#34495e; font-weight: 500;">{{ n.message }}</p>
+            <small style="color: gray; font-size: 12px;">{{ n.created_at }}</small>
+        </div>
+    {% empty %}
+        <p style="text-align: center; color: #7f8c8d; margin-top: 20px;">No notifications</p>
+    {% endfor %}
+</div>
+{% endblock %}

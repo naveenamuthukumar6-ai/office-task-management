@@ -9,11 +9,18 @@ class DailyTask(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    task = models.ForeignKey(
+        'tasks.Task',   # 👈 STRING REFERENCE
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     remarks = models.TextField(blank=True, null=True)
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.title} - {self.user.username}"
+
