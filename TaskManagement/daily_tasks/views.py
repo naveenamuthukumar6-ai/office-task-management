@@ -54,8 +54,6 @@ def daily_task_list(request):
         'role': role,
     })
 
-
-@role_required(['EMPLOYEE'])
 @login_required
 def add_daily_task(request):
     tasks = DailyTask.objects.filter(user=request.user).order_by('-date')
@@ -117,19 +115,14 @@ def update_daily_task_status(request, task_id):
             )
 
     return redirect('daily_task_list')
-
+@role_required(['ADMIN', 'MANAGER'])
 @login_required
 def update_task_remarks(request, task_id):
+    print("POST DATA:", request.POST)
     task = get_object_or_404(DailyTask, id=task_id)
-
-    role = request.user.userprofile.role.role_code
-
-    if role not in ['ADMIN', 'MANAGER']:
-        return HttpResponseForbidden("You cannot add remarks")
-
-    if request.method == "POST":
-        task.remarks = request.POST.get("remarks")
+    if request.method == 'POST':
+        task.remarks = request.POST.get('remarks')
         task.save()
-
+        print("✅ SAVED:", task.remarks)
     return redirect('daily_task_list')
 

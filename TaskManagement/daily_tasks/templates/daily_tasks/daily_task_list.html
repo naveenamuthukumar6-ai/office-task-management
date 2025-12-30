@@ -6,7 +6,6 @@
 {% block content %}
 
 <style>
-/* ===== PAGE WRAPPER ===== */
 .page-wrapper {
     width: 90%;
     max-width: 1200px;
@@ -14,7 +13,6 @@
     font-family: 'Segoe UI', Tahoma, sans-serif;
 }
 
-/* ===== HEADER ===== */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -37,11 +35,6 @@
     font-size: 14px;
 }
 
-.add-btn:hover {
-    background: #15803d;
-}
-
-/* ===== FILTER BAR ===== */
 .filter-bar {
     display: flex;
     gap: 10px;
@@ -78,15 +71,6 @@
     text-decoration: none;
 }
 
-.filter-btn:hover {
-    background: #217dbb;
-}
-
-.reset-btn:hover {
-    background: #c0392b;
-}
-
-/* ===== CARD ===== */
 .card {
     background: white;
     border-radius: 10px;
@@ -94,7 +78,6 @@
     overflow: hidden;
 }
 
-/* ===== TABLE ===== */
 .task-table {
     width: 100%;
     border-collapse: collapse;
@@ -104,8 +87,8 @@
     background: #1f2937;
     color: white;
     padding: 12px;
-    text-align: left;
     font-size: 14px;
+    text-align: left;
 }
 
 .task-table td {
@@ -114,34 +97,16 @@
     border-bottom: 1px solid #e5e7eb;
 }
 
-.task-table tr:hover {
-    background: #f9fafb;
-}
+.status-Pending { color: #b45309; font-weight: 600; }
+.status-InProgress { color: #2563eb; font-weight: 600; }
+.status-Completed { color: #15803d; font-weight: 600; }
 
-/* ===== STATUS COLORS ===== */
-.status-Pending {
-    color: #b45309;
-    font-weight: 600;
-}
-
-.status-InProgress {
-    color: #2563eb;
-    font-weight: 600;
-}
-
-.status-Completed {
-    color: #15803d;
-    font-weight: 600;
-}
-
-/* ===== REMARKS ===== */
 .remarks-form textarea {
     width: 100%;
     padding: 6px;
     border-radius: 6px;
     border: 1px solid #d1d5db;
     font-size: 13px;
-    resize: vertical;
 }
 
 .save-btn {
@@ -154,11 +119,6 @@
     cursor: pointer;
 }
 
-.save-btn:hover {
-    background: #15803d;
-}
-
-/* ===== USER ACTIONS ===== */
 .edit-btn {
     background: #f59e0b;
     color: white;
@@ -168,161 +128,114 @@
     font-size: 13px;
 }
 
-.edit-btn:hover {
-    background: #d97706;
-}
-
-.locked-text {
-    color: #9ca3af;
-    font-size: 13px;
-}
-
-.muted-text {
-    color: #6b7280;
-    font-style: italic;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-    .filter-bar {
-        flex-direction: column;
-        align-items: stretch;
-    }
-}
+.locked-text { color: #9ca3af; }
+.muted-text { color: #6b7280; font-style: italic; }
 </style>
 
 <div class="page-wrapper">
 
-    <!-- ===== HEADER ===== -->
-    <div class="page-header">
-        <h2>Daily Tasks</h2>
-
-        {% if role == 'EMPLOYEE' %}
-            <a href="{% url 'add_daily_task' %}" class="add-btn">+ Add Daily Task</a>
-        {% endif %}
-    </div>
-
-    <!-- ===== FILTER (ADMIN / MANAGER) ===== -->
-    {% if role == 'ADMIN' or role == 'MANAGER' %}
-    <form method="get" class="filter-bar">
-
-        <select name="user">
-            <option value="">All Users</option>
-            {% for u in users %}
-                <option value="{{ u.id }}" {% if selected_user == u.id|stringformat:"s" %}selected{% endif %}>
-                    {{ u.username }}
-                </option>
-            {% endfor %}
-        </select>
-
-        <select name="status">
-            <option value="">All Status</option>
-            <option value="Pending" {% if selected_status == "Pending" %}selected{% endif %}>Pending</option>
-            <option value="In Progress" {% if selected_status == "In Progress" %}selected{% endif %}>In Progress</option>
-            <option value="Completed" {% if selected_status == "Completed" %}selected{% endif %}>Completed</option>
-        </select>
-
-        <input type="date" name="date" value="{{ selected_date }}">
-
-        <button type="submit" class="filter-btn">Filter</button>
-        <a href="{% url 'daily_task_list' %}" class="reset-btn">Reset</a>
-    </form>
+<div class="page-header">
+    <h2>Daily Tasks</h2>
+    {% if role == 'EMPLOYEE' %}
+        <a href="{% url 'add_daily_task' %}" class="add-btn">+ Add Daily Task</a>
     {% endif %}
+</div>
 
-    <!-- ===== TABLE ===== -->
-    <div class="card">
-        <table class="task-table">
+{% if role == 'ADMIN' or role == 'MANAGER' %}
+<form method="get" class="filter-bar">
+    <select name="user">
+        <option value="">All Users</option>
+        {% for u in users %}
+            <option value="{{ u.id }}" {% if selected_user == u.id|stringformat:"s" %}selected{% endif %}>
+                {{ u.username }}
+            </option>
+        {% endfor %}
+    </select>
 
-            <thead>
-                <tr>
-                    <th>Date</th>
+    <select name="status">
+        <option value="">All Status</option>
+        <option value="Pending">Pending</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Completed">Completed</option>
+    </select>
 
-                    {% if role == 'ADMIN' or role == 'MANAGER' %}
-                        <th>User</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Status</th>
-                        <th>Remarks</th>
-                    {% else %}
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Status</th>
-                        <th>Remarks</th>
-                        <th>Action</th>
-                    {% endif %}
-                </tr>
-            </thead>
+    <input type="date" name="date" value="{{ selected_date }}">
+    <button type="submit" class="filter-btn">Filter</button>
+    <a href="{% url 'daily_task_list' %}" class="reset-btn">Reset</a>
+</form>
+{% endif %}
 
-            <tbody>
-                {% for task in tasks %}
-                <tr>
-                    <td>{{ task.date }}</td>
+<div class="card">
+<table class="task-table">
 
-                    {% if role == 'ADMIN' or role == 'MANAGER' %}
-                        <td>{{ task.user.username }}</td>
-                        <td>{{ task.title }}</td>
-                        <td>{{ task.description }}</td>
-                        <td class="status-{{ task.status|cut:' ' }}">{{ task.status }}</td>
+<thead>
+<tr>
+    <th>Date</th>
+    {% if role == 'ADMIN' or role == 'MANAGER' %}
+        <th>User</th><th>Title</th><th>Description</th><th>Status</th><th>Remarks</th>
+    {% else %}
+        <th>Title</th><th>Description</th><th>Status</th><th>Remarks</th><th>Action</th>
+    {% endif %}
+</tr>
+</thead>
 
-                        <td>
-                            <form method="post" class="remarks-form">
-                                {% csrf_token %}
-                                <input type="hidden" name="task_id" value="{{ task.id }}">
-                                <textarea name="remarks" rows="2">{{ task.remarks }}</textarea>
-                                <button type="submit" class="save-btn">Save</button>
-                            </form>
-                        </td>
+<tbody>
+{% for task in tasks %}
+<tr>
+<td>{{ task.date }}</td>
 
-                    {% else %}
-                        <td>{{ task.title }}</td>
-                        <td>{{ task.description }}</td>
+{% if role == 'ADMIN' or role == 'MANAGER' %}
+<td>{{ task.user.username }}</td>
+<td>{{ task.title }}</td>
+<td>{{ task.description }}</td>
+<td class="status-{{ task.status|cut:' ' }}">{{ task.status }}</td>
 
-                        <!-- ✅ STATUS UPDATE -->
-                         <!-- If task is not completed, allow status update -->
-                        <td>
-                            {% if task.status != "Completed" %}
-                                <form method="post" action="{% url 'update_daily_task_status' task.id %}">
-                                    {% csrf_token %}
-                                    <select name="status">
-                                        <option value="Pending" {% if task.status == "Pending" %}selected{% endif %}>Pending</option>
-                                        <option value="In Progress" {% if task.status == "In Progress" %}selected{% endif %}>In Progress</option>
-                                        <option value="Completed" {% if task.status == "Completed" %}selected{% endif %}>Completed</option>
-                                    </select>
-                                    <button type="submit" class="save-btn">Update</button>
-                                </form>
-                            {% else %}
-                                <span class="locked-text">Completed</span>
-                            {% endif %}
-                        </td>
+<td>
+<form method="post" action="{% url 'update_task_remarks' task.id %}" class="remarks-form">
+    {% csrf_token %}
+    <textarea name="remarks" rows="2">{{ task.remarks }}</textarea>
+    <button type="submit" class="save-btn">Save</button>
+</form>
+</td>
 
-                        <td>
-                            {% if task.remarks %}
-                                {{ task.remarks }}
-                            {% else %}
-                                <span class="muted-text">No remarks</span>
-                            {% endif %}
-                        </td>
+{% else %}
+<td>{{ task.title }}</td>
+<td>{{ task.description }}</td>
 
-                        <td>
-                            {% if task.status != "Completed" %}
-                                <a href="{% url 'edit_daily_task' task.id %}" class="edit-btn">Edit</a>
-                            {% else %}
-                                <span class="locked-text">Locked</span>
-                            {% endif %}
-                        </td>
-                    {% endif %}
-                </tr>
+<td>
+{% if task.status != "Completed" %}
+<form method="post" action="{% url 'update_daily_task_status' task.id %}">
+    {% csrf_token %}
+    <select name="status">
+        <option value="Pending" {% if task.status == "Pending" %}selected{% endif %}>Pending</option>
+        <option value="In Progress" {% if task.status == "In Progress" %}selected{% endif %}>In Progress</option>
+        <option value="Completed">Completed</option>
+    </select>
+    <button type="submit" class="save-btn">Update</button>
+</form>
+{% else %}
+<span class="locked-text">Completed</span>
+{% endif %}
+</td>
 
-                {% empty %}
-                <tr>
-                    <td colspan="6" class="muted-text">No tasks found</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+<td>{{ task.remarks|default:"No remarks" }}</td>
 
-        </table>
-    </div>
+<td>
+{% if task.status != "Completed" %}
+<a href="{% url 'edit_daily_task' task.id %}" class="edit-btn">Edit</a>
+{% else %}
+<span class="locked-text">Locked</span>
+{% endif %}
+</td>
+{% endif %}
+</tr>
+{% empty %}
+<tr><td colspan="6" class="muted-text">No tasks found</td></tr>
+{% endfor %}
+</tbody>
 
+</table>
+</div>
 </div>
 
 {% endblock %}
