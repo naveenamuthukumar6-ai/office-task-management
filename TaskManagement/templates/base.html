@@ -8,8 +8,8 @@
     <!-- GLOBAL BASE CSS -->
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     {% block extra_css %}{% endblock %}
-
 </head>
+
 <body>
 
 <!-- ===== TOP HEADER ===== -->
@@ -23,34 +23,64 @@
         <span class="welcome-text">
             Welcome, <b>{{ user.username }}</b>
         </span>
-          <a href="{% url 'notifications' %}">
-    🔔 
-    {% if unread_count > 0 %}
-        <span style="color:red;">({{ unread_count }})</span>
-    {% endif %}
-</a>
+
+        <!-- ✅ ROLE BADGE -->
+        {% if user.is_authenticated %}
+        <span style="
+            margin-left:10px;
+            padding:4px 10px;
+            font-size:12px;
+            font-weight:600;
+            border-radius:12px;
+            background:
+                {% if user.is_superuser %}#9b59b6
+                {% elif user.userprofile.role.role_code == 'ADMIN' %}#e67e22
+                {% elif user.userprofile.role.role_code == 'MANAGER' %}#3498db
+                {% else %}#2ecc71
+                {% endif %};
+            color:white;">
+            {% if user.is_superuser %}
+                SUPER ADMIN
+            {% else %}
+                {{ user.userprofile.role.role_code }}
+            {% endif %}
+        </span>
+        {% endif %}
+
+        <!-- 🔔 Notifications -->
+        <a href="{% url 'notifications' %}" style="margin-left:15px;">
+            🔔
+            {% if unread_count > 0 %}
+                <span style="color:red;">({{ unread_count }})</span>
+            {% endif %}
+        </a>
 
         <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
     </div>
 </header>
 
-
 <!-- ===== LAYOUT ===== -->
 <div class="layout">
 
     <!-- SIDEBAR -->
-<nav id="sidebar" class="sidebar">
-    <a href="{% url 'dashboard' %}">Dashboard</a>
+    <nav id="sidebar" class="sidebar">
 
-    {% if role == 'ADMIN' %}
-        <a href="{% url 'daily_task_list' %}">Track Daily Tasks</a>
-        <a href="{% url 'add_task' %}">Assign New Task</a>
-    {% elif role == 'EMPLOYEE' %}
-        <a href="{% url 'add_daily_task' %}">Add Daily Task</a>
-        <a href="{% url 'task_list' %}">My Tasks</a>
-    {% endif %}
-</nav>
+        <a href="{% url 'dashboard' %}">📊 Dashboard</a>
 
+        {% if user.is_superuser %}
+            <a href="{% url 'daily_task_list' %}">📋 Track Daily Task</a>
+            <a href="{% url 'add_task' %}">➕ Assign New Task</a>
+
+        {% elif user.userprofile.role.role_code == 'MANAGER' %}
+            <a href="{% url 'daily_task_list' %}">📋 Track Daily Task</a>
+            <a href="{% url 'add_task' %}">➕ Assign New Task</a>
+
+        {% else %}
+            <a href="{% url 'add_daily_task' %}">📝 Add Daily Task</a>
+            <a href="{% url 'task_list' %}">📄 My Tasks</a>
+        {% endif %}
+
+    </nav>
 
     <!-- MAIN CONTENT -->
     <main class="container">
@@ -64,7 +94,6 @@
 function toggleMenu() {
     document.getElementById("sidebar").classList.toggle("open");
 }
-
 </script>
 
 </body>

@@ -1,111 +1,88 @@
-from asyncio import tasks
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.tasks import task
 from .models import Task
 from accounts.decorators import role_required
 from django.db.models import Count
-from daily_tasks.models import DailyTask
-import csv
-from django.http import HttpResponse
 from notifications.models import Notification
-
+from django.http import HttpResponse
+import csv
 
 
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-
         user = authenticate(request, username=username, password=password)
 
-        if user is not None:
+        if user:
             login(request, user)
             return redirect('dashboard')
-        else:
-            return render(request, 'tasks/login.html', {
-                'error': 'Invalid username or password'
-            })
+
+        return render(request, 'tasks/login.html', {
+            'error': 'Invalid username or password'
+        })
 
     return render(request, 'tasks/login.html')
+
+
+# ✅ ADMIN & MANAGER SAME ACCESS
 @login_required
+@role_required(['ADMIN', 'MANAGER', 'EMPLOYEE'])
 def dashboard(request):
-    role = request.user.userprofile.role
+    role = request.user.userprofile.role.role_code
 
-    # 🔹 ROLE BASED TASK FILTER
-    if role == 'ADMIN':
+    if role in ['ADMIN', 'MANAGER']:
         tasks = Task.objects.all()
-
-    else:  # EMPLOYEE
+    else:
         tasks = Task.objects.filter(assigned_to=request.user)
 
-    # 🔹 STATUS COUNTS
     pending_count = tasks.filter(status='Pending').count()
     inprogress_count = tasks.filter(status='In Progress').count()
     completed_count = tasks.filter(status='Completed').count()
 
-    # 🔹 BAR CHART DATA
     user_task_data = (
-        tasks
-        .values('assigned_to__username')
+        tasks.values('assigned_to__username')
         .annotate(count=Count('id'))
     )
 
-    context = {
+    return render(request, 'tasks/dashboard.html', {
         'tasks': tasks,
         'role': role,
         'pending_count': pending_count,
         'inprogress_count': inprogress_count,
         'completed_count': completed_count,
         'user_task_data': user_task_data,
-    }
+    })
 
-    return render(request, 'tasks/dashboard.html', context)
 
 @login_required
-@role_required(['ADMIN'])
+@role_required(['ADMIN', 'MANAGER'])
 def add_task(request):
-    role = request.user.userprofile.role
+    user = request.user
+    role = user.userprofile.role.role_code
 
-    # 🔹 BASE QUERYSET
-    tasks = Task.objects.all() if role == 'ADMIN' else Task.objects.filter(assigned_to=request.user)
-    users = User.objects.filter(userprofile__role='EMPLOYEE') if role == 'ADMIN' else None
+    # ✅ BOTH Admin & Manager see ALL employees
+    users = User.objects.filter(userprofile__role__role_code='EMPLOYEE')
 
-    # 🔹 FILTERS
-    assigned_user_id = request.GET.get('user')
-    status = request.GET.get('status')
-    date = request.GET.get('date')
-    title = request.GET.get('title')
+    # ✅ BOTH Admin & Manager see ALL tasks
+    tasks = Task.objects.all()
 
-    if assigned_user_id:
-        tasks = tasks.filter(assigned_to__id=assigned_user_id)
-
-    if status:
-        tasks = tasks.filter(status=status)
-
-    if date:
-        tasks = tasks.filter(due_date=date)
-
-    if title:
-        tasks = tasks.filter(title__icontains=title)
-
-    # 🔹 ADD TASK
     if request.method == 'POST':
-        assigned_user_obj = User.objects.get(id=request.POST['assigned_to'])
+        assigned_user = User.objects.get(id=request.POST['assigned_to'])
+
         task = Task.objects.create(
             title=request.POST['title'],
             description=request.POST['description'],
-            assigned_to=assigned_user_obj,
-            assigned_by=request.user,
+            assigned_to=assigned_user,
+            assigned_by=user,
             due_date=request.POST['due_date'],
             status='Pending'
         )
 
-        # 🔹 CREATE NOTIFICATION
         Notification.objects.create(
-            user=assigned_user_obj,
+            user=assigned_user,
             message=f"You have been assigned a new task: {task.title}"
         )
 
@@ -113,18 +90,15 @@ def add_task(request):
 
     return render(request, 'tasks/addtask.html', {
         'tasks': tasks,
-        'users': users,
+        'users': users
     })
 
-@login_required
+
 @login_required
 def update_status(request, task_id):
-    task = Task.objects.get(id=task_id)
+    task = get_object_or_404(Task, id=task_id)
 
-    if task.assigned_to != request.user:
-        return redirect('dashboard')
-
-    if task.status == 'Completed':
+    if task.assigned_to != request.user or task.status == 'Completed':
         return redirect('dashboard')
 
     if request.method == 'POST':
@@ -134,7 +108,6 @@ def update_status(request, task_id):
             task.status = new_status
             task.save()
 
-            # ✅ NOTIFICATION (PROPERLY INDENTED)
             if new_status == 'Completed':
                 Notification.objects.create(
                     user=task.assigned_by,
@@ -143,38 +116,33 @@ def update_status(request, task_id):
 
     return redirect('dashboard')
 
+
+# ✅ ADMIN & MANAGER SAME ACCESS
 @login_required
 def task_list(request):
+    role = request.user.userprofile.role.role_code
     user = request.user
 
-    # Admin sees all tasks
-    if user.is_staff:
+    if role in ['ADMIN', 'MANAGER']:
         tasks = Task.objects.all()
     else:
         tasks = Task.objects.filter(assigned_to=user)
 
-    context = {
+    return render(request, 'tasks/task_list.html', {
         'tasks': tasks,
-        'is_admin': user.is_staff,
-    }
+        'role': role
+    })
 
-    return render(request, 'tasks/task_list.html', context)
 
+# ✅ ADMIN & MANAGER SAME ACCESS
 @login_required
-@role_required(['ADMIN'])
+@role_required(['ADMIN', 'MANAGER'])
 def export_tasks_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="task_report.csv"'
 
     writer = csv.writer(response)
-    writer.writerow([
-        'Title',
-        'Description',
-        'Assigned To',
-        'Status',
-        'Due Date',
-        'Created At'
-    ])
+    writer.writerow(['Title', 'Description', 'Assigned To', 'Status', 'Due Date', 'Created At'])
 
     tasks = Task.objects.all()
 

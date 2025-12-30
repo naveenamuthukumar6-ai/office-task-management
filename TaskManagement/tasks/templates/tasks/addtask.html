@@ -282,11 +282,12 @@ body {
                 <textarea name="description" required></textarea>
 
                 <label>Assign To</label>
-                <select name="assigned_to" required>
-                    {% for user in users %}
-                        <option value="{{ user.id }}">{{ user.username }}</option>
-                    {% endfor %}
-                </select>
+<select name="assigned_to" required>
+    {% for user in users %}
+        <option value="{{ user.id }}">{{ user.username }}</option>
+    {% endfor %}
+</select>
+
 
                 <label>Due Date</label>
                 <input type="date" name="due_date" required>

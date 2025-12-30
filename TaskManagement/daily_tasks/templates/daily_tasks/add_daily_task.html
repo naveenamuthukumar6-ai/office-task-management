@@ -1,51 +1,154 @@
 {% extends "base.html" %}
 {% load static %}
-
 {% block title %}Add Daily Task{% endblock %}
 
 {% block content %}
-<div style="display:flex; justify-content:center; margin-top:50px; padding:20px;">
 
-    <div style="background:#fff; padding:30px 40px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); width:400px; max-width:90%;">
-        <h2 style="margin-top:0; margin-bottom:25px; color:#3498db; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align:center;">Add Daily Task</h2>
+<!-- 🔹 MODAL -->
+<div id="taskModal"
+     style="display:none; position:fixed; top:0; left:0; width:100%;
+            height:100%; background:rgba(0,0,0,0.6);
+            justify-content:center; align-items:center; z-index:1000;">
 
-        <form method="post" style="display:flex; flex-direction:column;">
+    <div style="background:#fff; padding:30px; border-radius:12px;
+                width:400px; max-width:90%; position:relative;">
+
+        <span onclick="closeModal()"
+              style="position:absolute; top:12px; right:15px;
+                     font-size:22px; cursor:pointer;">&times;</span>
+
+        <h2 style="text-align:center; color:#3498db;">Add Daily Task</h2>
+
+        <form method="post">
             {% csrf_token %}
 
-            <label style="font-weight:600; color:#3498db; margin-bottom:8px;">Task Title</label>
-            <input type="text" name="title" placeholder="Enter task title" required
-                style="padding:12px 15px; border-radius:8px; border:1px solid #ccc; margin-bottom:20px; font-size:14px; box-sizing:border-box; outline:none;"
-                onfocus="this.style.borderColor='#3498db'; this.style.boxShadow='0 0 5px rgba(52,152,219,0.5)';"
-                onblur="this.style.borderColor='#ccc'; this.style.boxShadow='none';"
-            >
+            <label>Title</label>
+            <input type="text" name="title" required
+                style="width:100%; padding:10px; margin-bottom:15px;">
 
-            <label style="font-weight:600; color:#3498db; margin-bottom:8px;">Description</label>
-            <textarea name="description" rows="4" placeholder="Enter task description"
-                style="padding:12px 15px; border-radius:8px; border:1px solid #ccc; margin-bottom:20px; font-size:14px; resize:vertical; outline:none;"
-                onfocus="this.style.borderColor='#3498db'; this.style.boxShadow='0 0 5px rgba(52,152,219,0.5)';"
-                onblur="this.style.borderColor='#ccc'; this.style.boxShadow='none';"
-            ></textarea>
+            <label>Description</label>
+            <textarea name="description" rows="3"
+                style="width:100%; padding:10px; margin-bottom:15px;"></textarea>
 
-            <label style="font-weight:600; color:#3498db; margin-bottom:8px;">Status</label>
+            <label>Status</label>
             <select name="status"
-                style="padding:12px 15px; border-radius:8px; border:1px solid #ccc; margin-bottom:25px; font-size:14px; outline:none;"
-                onfocus="this.style.borderColor='#3498db'; this.style.boxShadow='0 0 5px rgba(52,152,219,0.5)';"
-                onblur="this.style.borderColor='#ccc'; this.style.boxShadow='none';"
-            >
+                style="width:100%; padding:10px; margin-bottom:20px;">
                 <option value="Pending">Pending</option>
                 <option value="In Progress">In Progress</option>
                 <option value="Completed">Completed</option>
             </select>
 
             <button type="submit"
-                style="background-color:#3498db; color:white; padding:12px 0; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer; border:none; transition:background 0.3s, transform 0.2s;"
-                onmouseover="this.style.backgroundColor='#217dbb'; this.style.transform='translateY(-2px)';"
-                onmouseout="this.style.backgroundColor='#3498db'; this.style.transform='translateY(0)';"
-            >
+                style="width:100%; background:#3498db; color:white;
+                       padding:10px; border:none; border-radius:6px;">
                 Save Task
             </button>
         </form>
     </div>
+</div>
+
+<!-- 🔹 TASK TABLE -->
+<div style="display:flex; justify-content:center; margin-top:40px;">
+<div style="background:#fff; padding:25px; border-radius:12px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+            width:95%; max-width:1100px;">
+
+<!-- 🔹 HEADER ROW -->
+<div style="display:flex; justify-content:space-between; align-items:center;
+            margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+
+    <h2 style="margin:0;">My Daily Tasks</h2>
+
+    <button onclick="openModal()"
+        style="background:#27ae60; color:white; padding:10px 20px;
+               border:none; border-radius:8px; font-size:14px;
+               font-weight:600; cursor:pointer;">
+        + Add Daily Task
+    </button>
+</div>
+
+{% if tasks %}
+<table style="width:100%; border-collapse:collapse;">
+<thead>
+<tr style="background:#3498db; color:white;">
+    <th style="padding:10px;">Date</th>
+    <th style="padding:10px;">Title</th>
+    <th style="padding:10px;">Status</th>
+    <th style="padding:10px;">Remarks</th>
+    <th style="padding:10px;">Action</th>
+</tr>
+</thead>
+
+<tbody>
+{% for task in tasks %}
+<tr style="border-bottom:1px solid #ddd;">
+
+    <td style="padding:8px;">{{ task.date }}</td>
+    <td style="padding:8px;">{{ task.title }}</td>
+
+    <!-- STATUS -->
+    <td style="padding:8px; font-weight:600;
+        {% if task.status == 'Pending' %}color:#e74c3c;
+        {% elif task.status == 'In Progress' %}color:#f39c12;
+        {% else %}color:#27ae60;
+        {% endif %}
+    ">
+        {{ task.status }}
+    </td>
+
+    <!-- REMARKS -->
+    <td style="padding:8px;">
+        {% if task.remarks %}
+            {{ task.remarks }}
+        {% else %}
+            <span style="color:#aaa;">—</span>
+        {% endif %}
+    </td>
+
+    <!-- ACTION -->
+    <td style="padding:8px;">
+        {% if task.status != "Completed" %}
+        <form method="post"
+              action="{% url 'update_daily_task_status' task.id %}"
+              style="display:inline;">
+            {% csrf_token %}
+            <select name="status"
+                style="padding:4px; font-size:13px;">
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+            <button type="submit"
+                style="background:#27ae60; color:white;
+                       padding:4px 8px; border:none;
+                       border-radius:4px; font-size:13px;">
+                Update
+            </button>
+        </form>
+        {% else %}
+            <span style="color:#999; font-size:13px;">🔒 Locked</span>
+        {% endif %}
+    </td>
+
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% else %}
+<p style="text-align:center;">No tasks available</p>
+{% endif %}
 
 </div>
+</div>
+
+<script>
+function openModal() {
+    document.getElementById("taskModal").style.display = "flex";
+}
+function closeModal() {
+    document.getElementById("taskModal").style.display = "none";
+}
+</script>
+
 {% endblock %}

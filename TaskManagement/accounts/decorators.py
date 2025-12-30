@@ -1,11 +1,13 @@
 from django.shortcuts import redirect
+from functools import wraps
 
 def role_required(allowed_roles):
     def decorator(view_func):
-        def wrapper(request, *args, **kwargs):
-            if request.user.is_authenticated:
-                if request.user.userprofile.role in allowed_roles:
-                    return view_func(request, *args, **kwargs)
-            return redirect('dashboard')
-        return wrapper
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            role = request.user.userprofile.role.role_code
+            if role not in allowed_roles:
+                return redirect('dashboard')
+            return view_func(request, *args, **kwargs)
+        return _wrapped_view
     return decorator

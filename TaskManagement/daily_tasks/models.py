@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class DailyTask(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
@@ -23,4 +24,7 @@ class DailyTask(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.user.username}"
-
+    def save(self, *args, **kwargs):
+        if self.user.userprofile.role.role_code != 'EMPLOYEE':
+            raise ValueError("Only employees can submit daily tasks")
+        super().save(*args, **kwargs)
