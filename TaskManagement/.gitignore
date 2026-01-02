@@ -1,0 +1,16 @@
+# Python
+*.pyc
+__pycache__/
+
+# Environment
+venv/
+
+# Database
+db.sqlite3
+
+# Logs
+*.log
+
+# OS files (optional but safe)
+.DS_Store
+Thumbs.db
