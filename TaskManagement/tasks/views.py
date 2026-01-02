@@ -27,7 +27,8 @@ def login_view(request):
     return render(request, 'tasks/login.html')
 
 
-# ✅ ADMIN & MANAGER SAME ACCESS
+# ✅ ADMIN, MANAGER & EMPLOYEE ACCESS
+
 @login_required
 @role_required(['ADMIN', 'MANAGER', 'EMPLOYEE'])
 def dashboard(request):
@@ -42,9 +43,11 @@ def dashboard(request):
     inprogress_count = tasks.filter(status='In Progress').count()
     completed_count = tasks.filter(status='Completed').count()
 
+    # ✅ Group by user AND status
     user_task_data = (
-        tasks.values('assigned_to__username')
+        tasks.values('assigned_to__username', 'status')
         .annotate(count=Count('id'))
+        .order_by('assigned_to__username')
     )
 
     return render(request, 'tasks/dashboard.html', {
@@ -55,7 +58,6 @@ def dashboard(request):
         'completed_count': completed_count,
         'user_task_data': user_task_data,
     })
-
 
 @login_required
 @role_required(['ADMIN', 'MANAGER'])

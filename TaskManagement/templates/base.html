@@ -7,6 +7,76 @@
 
     <!-- GLOBAL BASE CSS -->
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    <!-- ✅ FONT AWESOME CDN -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4l0z2xU6c6aJ5j6Y+5p1j7JQ=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer" />
+
+    <!-- 🔹 Sidebar Enhancement CSS -->
+    <style>
+        .sidebar {
+            width: 240px;
+            background: linear-gradient(180deg, #2c3e50, #34495e);
+            padding: 20px 0;
+            min-height: 100vh;
+            box-shadow: 3px 0 12px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 20px;
+            margin: 6px 12px;
+            color: #ecf0f1;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 10px;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .sidebar a i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(4px);
+        }
+
+        .sidebar::before {
+            content: "MENU";
+            display: block;
+            color: rgba(255,255,255,0.5);
+            font-size: 11px;
+            letter-spacing: 2px;
+            padding: 0 20px 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        /* Mobile sidebar */
+        .sidebar.open {
+            left: 0;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -260px;
+                top: 0;
+                z-index: 1000;
+            }
+        }
+    </style>
+
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -24,30 +94,7 @@
             Welcome, <b>{{ user.username }}</b>
         </span>
 
-        <!-- ✅ ROLE BADGE -->
-        {% if user.is_authenticated %}
-        <span style="
-            margin-left:10px;
-            padding:4px 10px;
-            font-size:12px;
-            font-weight:600;
-            border-radius:12px;
-            background:
-                {% if user.is_superuser %}#9b59b6
-                {% elif user.userprofile.role.role_code == 'ADMIN' %}#e67e22
-                {% elif user.userprofile.role.role_code == 'MANAGER' %}#3498db
-                {% else %}#2ecc71
-                {% endif %};
-            color:white;">
-            {% if user.is_superuser %}
-                SUPER ADMIN
-            {% else %}
-                {{ user.userprofile.role.role_code }}
-            {% endif %}
-        </span>
-        {% endif %}
-
-        <!-- 🔔 Notifications -->
+        <!-- Notifications -->
         <a href="{% url 'notifications' %}" style="margin-left:15px;">
             🔔
             {% if unread_count > 0 %}
@@ -55,7 +102,10 @@
             {% endif %}
         </a>
 
-        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+        <!-- Logout -->
+        <a href="{% url 'logout' %}" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
     </div>
 </header>
 
@@ -65,19 +115,40 @@
     <!-- SIDEBAR -->
     <nav id="sidebar" class="sidebar">
 
-        <a href="{% url 'dashboard' %}">📊 Dashboard</a>
+        <a href="{% url 'dashboard' %}">
+            <i class="fa-solid fa-chart-line"></i>
+            Dashboard
+        </a>
 
         {% if user.is_superuser %}
-            <a href="{% url 'daily_task_list' %}">📋 Track Daily Task</a>
-            <a href="{% url 'add_task' %}">➕ Assign New Task</a>
+            <a href="{% url 'daily_task_list' %}">
+                <i class="fa-solid fa-list-check"></i>
+                Track Daily Task
+            </a>
+            <a href="{% url 'add_task' %}">
+                <i class="fa-solid fa-plus"></i>
+                Assign New Task
+            </a>
 
         {% elif user.userprofile.role.role_code == 'MANAGER' %}
-            <a href="{% url 'daily_task_list' %}">📋 Track Daily Task</a>
-            <a href="{% url 'add_task' %}">➕ Assign New Task</a>
+            <a href="{% url 'daily_task_list' %}">
+                <i class="fa-solid fa-list-check"></i>
+                Track Daily Task
+            </a>
+            <a href="{% url 'add_task' %}">
+                <i class="fa-solid fa-plus"></i>
+                Assign New Task
+            </a>
 
         {% else %}
-            <a href="{% url 'add_daily_task' %}">📝 Add Daily Task</a>
-            <a href="{% url 'task_list' %}">📄 My Tasks</a>
+            <a href="{% url 'add_daily_task' %}">
+                <i class="fa-solid fa-pen-to-square"></i>
+                Add Daily Task
+            </a>
+            <a href="{% url 'task_list' %}">
+                <i class="fa-solid fa-clipboard-list"></i>
+                My Tasks
+            </a>
         {% endif %}
 
     </nav>
