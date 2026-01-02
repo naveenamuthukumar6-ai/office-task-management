@@ -11,6 +11,6 @@ db.sqlite3
 # Logs
 *.log
 
-# OS files (optional but safe)
+# OS files
 .DS_Store
 Thumbs.db
