@@ -120,7 +120,7 @@
             Dashboard
         </a>
 
-        {% if user.is_superuser %}
+        {% if user.userprofile.role.role_code == 'ADMIN' %}
             <a href="{% url 'daily_task_list' %}">
                 <i class="fa-solid fa-list-check"></i>
                 Track Daily Task
